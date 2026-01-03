@@ -1,8 +1,11 @@
 package com.vk.ratelimiter;
 
 public class Constants {
-    public static final int PORT = 8080;
-    public static final String HOST = "0.0.0.0";
-
-
+    private Constants() {}
+    public static final int PORT;
+    public static final String HOST;
+    static {
+        PORT = AppConfig.getInt("server.port", 8080);
+        HOST = AppConfig.getString("server.host", "0.0.0.0");
+    }
 }
