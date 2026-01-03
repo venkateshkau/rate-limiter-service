@@ -11,12 +11,12 @@ public class AppConfig {
                 .getClassLoader()
                 .getResourceAsStream("application.properties")) {
 
-            if (is == null) {
-                throw new RuntimeException("application.properties not found");
+            if (is != null) {
+                PROPS.load(is);
             }
-            PROPS.load(is);
+
         } catch (Exception e) {
-            throw new RuntimeException("Failed to load configuration", e);
+            //throw new RuntimeException("Failed to load configuration", e);
         }
     }
 
@@ -27,6 +27,13 @@ public class AppConfig {
     }
 
     public static int getInt(String key, int defaultValue) {
-        return Integer.parseInt(PROPS.getProperty(key, String.valueOf(defaultValue)));
+        String value = PROPS.getProperty(key, String.valueOf(defaultValue));
+        int intVal;
+        try {
+            intVal = Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException( " Port number " + value + " is not an integer value");
+        }
+        return intVal;
     }
 }
