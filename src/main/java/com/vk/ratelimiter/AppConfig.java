@@ -16,7 +16,7 @@ public class AppConfig {
             }
 
         } catch (Exception e) {
-            //throw new RuntimeException("Failed to load configuration", e);
+            throw new RuntimeException("Failed to load configuration", e);
         }
     }
 
@@ -32,7 +32,7 @@ public class AppConfig {
         try {
             intVal = Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            throw new RuntimeException( " Port number " + value + " is not an integer value");
+            throw new RuntimeException("Invalid integer for key '" + key + "': " + value);
         }
         return intVal;
     }
