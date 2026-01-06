@@ -13,4 +13,20 @@ public class RateLimitResult {
         this.resetAtEpochMs = resetAtEpochMs;
         this.limit = limit;
     }
+
+    public boolean isAllowed() {
+        return allowed;
+    }
+
+    public int getRemaining() {
+        return remaining;
+    }
+
+    public long getResetAtEpochMs() {
+        return resetAtEpochMs;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
 }

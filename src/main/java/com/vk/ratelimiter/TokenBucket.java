@@ -21,10 +21,11 @@ public class TokenBucket {
         LOGGER.info("Request for key: " + key);
         synchronized (lockObj) {
             LOGGER.info("Acquired  lock for key: " + key);
-            long currentWindowSecond = Instant.now().toEpochMilli() - (windowSeconds * 1000L);
+            long currentEpoch = Instant.now().toEpochMilli();
+            long currentWindowSecond = currentEpoch - (windowSeconds * 1000L);
             ArrayDeque<Long> logs =
-                    map.computeIfAbsent(key, k -> new ArrayDeque<Long>());
-            while (logs.getFirst() < currentWindowSecond) {
+                    map.computeIfAbsent(key, k -> new ArrayDeque<>());
+            while (!logs.isEmpty() && logs.getFirst() < currentWindowSecond) {
                 logs.removeFirst();
             }
 
@@ -33,7 +34,7 @@ public class TokenBucket {
                         Instant.ofEpochMilli(logs.getFirst()).atZone(ZoneId.systemDefault()));
                 return new RateLimitResult(false, 0, logs.getFirst(), limit);
             }
-            logs.addLast(currentWindowSecond);
+            logs.addLast(currentEpoch);
             map.put(key, logs);
             LOGGER.info("Accepted request for key: " + key + " at " + currentWindowSecond);
             return new RateLimitResult(true, limit - logs.size(), logs.getFirst(), limit);
